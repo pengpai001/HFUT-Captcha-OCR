@@ -1,0 +1,33 @@
+System:
+  Version: '1.0'
+  MemoryUsage: 0.7
+  Language: CN
+Model:
+  Sites:
+  - HfutCaptcha
+  ModelName: HfutCaptcha
+  ModelType: CTC
+  CharSet: ALPHANUMERIC
+  CharExclude: ''
+  CharReplace: {}
+  ImageWidth: 128
+  ImageHeight: 64
+  Channel: 1
+  CNNNetwork: CNNX
+  RecurrentNetwork: GRU
+  UnitsNum: 64
+  Optimizer: RAdam
+  LearningRate: 0.001
+  LabelFrom: FileName
+  CompileModelPath: ./projects/HfutCaptcha/out/graph/HfutCaptcha.pb
+  Trains:
+    EndAccuracy: 0.95
+    EndCost: 0.5
+    EndEpochs: 2
+    BatchSize: 64
+    ValidationBatchSize: 32
+    SavedStep: 100
+  Dataset:
+    TrainPath: ./projects/HfutCaptcha/dataset_train
+    ValidationPath: ./projects/HfutCaptcha/dataset_val
+    TestPath: ''

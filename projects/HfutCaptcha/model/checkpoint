@@ -1,0 +1,2 @@
+model_checkpoint_path: "HfutCaptcha.model-600"
+all_model_checkpoint_paths: "HfutCaptcha.model-600"
