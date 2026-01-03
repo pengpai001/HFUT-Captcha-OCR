@@ -1,33 +1,80 @@
 System:
-  Version: '1.0'
-  MemoryUsage: 0.7
-  Language: CN
-Model:
-  Sites:
-  - HfutCaptcha
-  ModelName: HfutCaptcha
-  ModelType: CTC
-  CharSet: ALPHANUMERIC
-  CharExclude: ''
-  CharReplace: {}
-  ImageWidth: 128
-  ImageHeight: 64
-  Channel: 1
-  CNNNetwork: CNNX
+  MemoryUsage: 0.6
+  Version: 2
+
+NeuralNet:
+  CNNNetwork: CNN5
   RecurrentNetwork: GRU
   UnitsNum: 64
-  Optimizer: RAdam
-  LearningRate: 0.001
+  Optimizer: Adam
+  OutputLayer:
+    LossFunction: CTC
+    Decoder: CTC
+
+Model:
+  ModelName: HfutCaptcha
+  ModelField: Image
+  ModelScene: Classification
+
+FieldParam:
+  Category: ALPHANUMERIC_LOWER
+  Resize: [128, 64]
+  ImageChannel: 3
+  ImageWidth: 128
+  ImageHeight: 64
+  MaxLabelNum: 4
+  OutputSplit: ""
+
+Label:
   LabelFrom: FileName
-  CompileModelPath: ./projects/HfutCaptcha/out/graph/HfutCaptcha.pb
-  Trains:
-    EndAccuracy: 0.95
-    EndCost: 0.5
-    EndEpochs: 2
-    BatchSize: 64
-    ValidationBatchSize: 32
-    SavedStep: 100
-  Dataset:
-    TrainPath: ./projects/HfutCaptcha/dataset_train
-    ValidationPath: ./projects/HfutCaptcha/dataset_val
-    TestPath: ''
+  ExtractRegex: '^[^_]+'
+  LabelSplit: ""
+
+Trains:
+  # === 1. 输出文件路径 (生成的 tfrecords 放这里) ===
+  DatasetPath:
+    Training: 
+      - projects/HfutCaptcha/train.tfrecords
+    Validation: 
+      - projects/HfutCaptcha/val.tfrecords
+  
+  # === 2. 【关键修改】图片源路径 (去新家找图片) ===
+  SourcePath:
+    # 训练集去 dataset_train 找
+    Training: projects/HfutCaptcha/dataset_train
+    # 验证集去 dataset_val 找
+    Validation: projects/HfutCaptcha/dataset_val
+
+  ValidationSetNum: 50
+  SavedSteps: 100
+  ValidationSteps: 500
+  EndAcc: 0.98
+  EndCost: 0.1
+  EndEpochs: 200
+  BatchSize: 64
+  ValidationBatchSize: 32
+  LearningRate: 0.001
+
+DataAugmentation:
+  Binaryzation: -1
+  MedianBlur: -1
+  GaussianBlur: -1
+  EqualizeHist: False
+  Laplace: False
+  WarpPerspective: False
+  Rotate: -1
+  PepperNoise: -1
+  Brightness: True
+  Saturation: True
+  Hue: True
+  Gamma: True
+  ChannelSwap: False
+  RandomBlank: -1
+  RandomTransition: -1
+
+Pretreatment:
+  Binaryzation: -1
+  ReplaceTransparent: True
+  HorizontalStitching: False
+  ConcatFrames: -1
+  BlendFrames: -1
